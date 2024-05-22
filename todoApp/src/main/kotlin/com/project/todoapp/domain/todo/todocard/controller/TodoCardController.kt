@@ -1,9 +1,10 @@
-package com.project.todoapp.domain.todocard.controller
+package com.project.todoapp.domain.todo.todocard.controller
 
-import com.project.todoapp.domain.todocard.dtos.CreateTodoCardArguments
-import com.project.todoapp.domain.todocard.dtos.TodoCardDto
-import com.project.todoapp.domain.todocard.dtos.UpdateTodoCardArguments
-import com.project.todoapp.domain.todocard.service.TodoCardService
+import com.project.todoapp.domain.todo.todocard.dtos.CreateTodoCardArguments
+import com.project.todoapp.domain.todo.todocard.dtos.RetrieveTodoCardDto
+import com.project.todoapp.domain.todo.todocard.dtos.TodoCardDto
+import com.project.todoapp.domain.todo.todocard.dtos.UpdateTodoCardArguments
+import com.project.todoapp.domain.todo.todocard.service.TodoCardService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -24,7 +25,7 @@ class TodoCardController (
 
     //선택한 할일 조회 기능
     @GetMapping("/{todoCardId}")
-    fun findTodoCard(@PathVariable todoCardId: Long) : ResponseEntity<TodoCardDto>{
+    fun findTodoCard(@PathVariable todoCardId: Long) : ResponseEntity<RetrieveTodoCardDto>{
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(todoCardService.findById(todoCardId))
@@ -36,6 +37,16 @@ class TodoCardController (
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(todoCardService.findAll())
+    }
+
+    @PatchMapping("/{todoCardId}/complete")
+    fun completeTodoCard(@PathVariable todoCardId: Long) :ResponseEntity<Unit>{
+
+        todoCardService.completeTodoCard(todoCardId)
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(null)
     }
 
     @PutMapping("/{todoCardId}")

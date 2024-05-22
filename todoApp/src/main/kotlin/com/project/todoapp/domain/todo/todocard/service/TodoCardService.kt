@@ -1,11 +1,13 @@
-package com.project.todoapp.domain.todocard.service
+package com.project.todoapp.domain.todo.todocard.service
 
 import com.project.todoapp.domain.common.exception.ModelNotFoundException
-import com.project.todoapp.domain.todocard.dtos.CreateTodoCardArguments
-import com.project.todoapp.domain.todocard.dtos.TodoCardDto
-import com.project.todoapp.domain.todocard.dtos.UpdateTodoCardArguments
-import com.project.todoapp.domain.todocard.model.TodoCards
-import com.project.todoapp.domain.todocard.repository.TodoCardRepository
+import com.project.todoapp.domain.todo.reply.repository.ReplyRepository
+import com.project.todoapp.domain.todo.todocard.dtos.CreateTodoCardArguments
+import com.project.todoapp.domain.todo.todocard.dtos.RetrieveTodoCardDto
+import com.project.todoapp.domain.todo.todocard.dtos.TodoCardDto
+import com.project.todoapp.domain.todo.todocard.dtos.UpdateTodoCardArguments
+import com.project.todoapp.domain.todo.todocard.model.TodoCards
+import com.project.todoapp.domain.todo.todocard.repository.TodoCardRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -27,11 +29,11 @@ class TodoCardService (
         return TodoCardDto.from(todoCard)
     }
 
-    fun findById(todoCardId: Long): TodoCardDto? {
+    fun findById(todoCardId: Long): RetrieveTodoCardDto {
         //todoCardId로 db에서 todoCard 찾기
-        val foundTodoCard = todoCardRepository.findByIdOrNull(todoCardId)
+        val foundTodoCard = todoCardRepository.findByIdOrNull(todoCardId) ?: throw ModelNotFoundException("TodoCard", todoCardId)
 
-        return foundTodoCard?.let { TodoCardDto.from(it) }
+        return RetrieveTodoCardDto.from(foundTodoCard)
     }
 
     fun findAll(): List<TodoCardDto> {
@@ -53,5 +55,13 @@ class TodoCardService (
 
     fun deleteTodoCard(todoCardId: Long) {
         todoCardRepository.deleteById(todoCardId)
+    }
+
+    @Transactional
+    fun completeTodoCard(todoCardId: Long) {
+        //저장되어 있는 todoCard를 찾는다
+        val todoCard = todoCardRepository.findByIdOrNull(todoCardId) ?: throw ModelNotFoundException("TodoCard", todoCardId)
+        //상태를 변경한다
+        todoCard.complete()
     }
 }
