@@ -1,6 +1,7 @@
 package com.project.todoapp.domain.todocard.model
 
 import com.project.todoapp.domain.todocard.dtos.CreateTodoCardArguments
+import com.project.todoapp.domain.todocard.dtos.UpdateTodoCardArguments
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -10,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 
 @Entity
-class TodoCards private constructor(
+class TodoCards (
     @Column
     var title : String,
 
@@ -28,13 +29,9 @@ class TodoCards private constructor(
     @Column(updatable = false)
     val createdAt : LocalDateTime = LocalDateTime.now()
 
-    companion object{
-        fun from(createTodoCardArguments: CreateTodoCardArguments) : TodoCards{
-            return TodoCards(
-                createTodoCardArguments.title,
-                createTodoCardArguments.content,
-                createTodoCardArguments.authorName
-            )
-        }
+    fun updateTodoCardField(arguments: UpdateTodoCardArguments){
+        title = arguments.title
+        content = arguments.content
+        authorName = arguments.authorName
     }
 }

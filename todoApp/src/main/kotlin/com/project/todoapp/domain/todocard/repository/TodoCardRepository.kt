@@ -1,4 +1,8 @@
 package com.project.todoapp.domain.todocard.repository
 
-class TodoCardRepository {
+import com.project.todoapp.domain.todocard.model.TodoCards
+import org.springframework.data.jpa.repository.JpaRepository
+
+interface TodoCardRepository : JpaRepository<TodoCards, Long>{
+    fun findAllByOrderByCreatedAtDesc() : List<TodoCards>
 }
