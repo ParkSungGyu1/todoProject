@@ -1,11 +1,10 @@
 package com.project.todoapp.domain.todo.todocard.controller
 
-import com.project.todoapp.domain.todo.todocard.dtos.CreateTodoCardArguments
-import com.project.todoapp.domain.todo.todocard.dtos.RetrieveTodoCardDto
-import com.project.todoapp.domain.todo.todocard.dtos.TodoCardDto
-import com.project.todoapp.domain.todo.todocard.dtos.UpdateTodoCardArguments
+import com.project.todoapp.domain.todo.todocard.dtos.*
 import com.project.todoapp.domain.todo.todocard.service.TodoCardService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -41,6 +40,12 @@ class TodoCardController (
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(todoCardService.findAll(sort, authorName))
+    }
+    @GetMapping("/with-reply")
+    fun findAllTodoCardWithReply(pageable: Pageable) : ResponseEntity<Page<ReplyWithTodoCardDto>>{
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(todoCardService.findAllWithReply(pageable))
     }
 
     @PatchMapping("/{todoCardId}/complete")

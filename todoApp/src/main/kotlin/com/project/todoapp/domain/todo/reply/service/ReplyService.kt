@@ -38,7 +38,6 @@ class ReplyService (
     fun updateReply(replyId: Long, todoCardId: Long, argument: UpdateReplyArgument): ReplyDto {
         val foundTodoCard = todoRepository.findByIdOrNull(todoCardId) ?: throw ModelNotFoundException("TodoCard", todoCardId)
         val foundReply = replyRepository.findByIdOrNull(replyId) ?: throw ModelNotFoundException("Reply", replyId)
-
         foundReply.checkAuthentication(argument.authorName, argument.password)
         foundReply.changeContent(argument.content)
 

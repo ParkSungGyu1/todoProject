@@ -2,13 +2,12 @@ package com.project.todoapp.domain.todo.todocard.service
 
 import com.project.todoapp.domain.common.exception.ModelNotFoundException
 import com.project.todoapp.domain.todo.reply.repository.ReplyRepository
-import com.project.todoapp.domain.todo.todocard.dtos.CreateTodoCardArguments
-import com.project.todoapp.domain.todo.todocard.dtos.RetrieveTodoCardDto
-import com.project.todoapp.domain.todo.todocard.dtos.TodoCardDto
-import com.project.todoapp.domain.todo.todocard.dtos.UpdateTodoCardArguments
+import com.project.todoapp.domain.todo.todocard.dtos.*
 import com.project.todoapp.domain.todo.todocard.model.TodoCards
 import com.project.todoapp.domain.todo.todocard.repository.TodoCardRepository
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -73,5 +72,11 @@ class TodoCardService (
         val todoCard = todoCardRepository.findByIdOrNull(todoCardId) ?: throw ModelNotFoundException("TodoCard", todoCardId)
         //상태를 변경한다
         todoCard.complete()
+    }
+
+    fun findAllWithReply(pageable: Pageable): Page<ReplyWithTodoCardDto>? {
+        val findAll = todoCardRepository.findAllFetchJPQL(pageable)
+        //val findAll = todoCardRepository.findAll(pageable)
+        return findAll.map { ReplyWithTodoCardDto.from(it) }
     }
 }
