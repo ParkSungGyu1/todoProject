@@ -21,7 +21,7 @@ class TodoCardService (
     @Transactional
     fun createTodoCard(createTodoCardArguments: CreateTodoCardArguments): TodoCardDto {
         //DTO를 Entity 변환
-        val todo = TodoCards(createTodoCardArguments.title,createTodoCardArguments.authorName,createTodoCardArguments.content)
+        val todo = TodoCards(createTodoCardArguments.title,createTodoCardArguments.content, createTodoCardArguments.authorName)
 
         //Entity를 저장합니다!
         val todoCard = todoCardRepository.save(todo)
@@ -36,9 +36,19 @@ class TodoCardService (
         return RetrieveTodoCardDto.from(foundTodoCard)
     }
 
-    fun findAll(): List<TodoCardDto> {
-        val foundTodoCards = todoCardRepository.findAllByOrderByCreatedAtDesc()
-        return foundTodoCards.map { TodoCardDto.from(it) }
+    fun findAll(sort : String? , authorName : String?): List<TodoCardDto> {
+
+        authorName?.let {
+            // 입력받은 사용자 이름을 가지고 있는 데이터를 꺼내와야함
+            return todoCardRepository.findAllByAuthorName(authorName).map { TodoCardDto.from(it) }
+        }
+
+        // sort ==> desc(내림차순) / asc(오름차순)
+        return if(sort == "desc"){
+            todoCardRepository.findAllByOrderByCreatedAtDesc()
+        } else {
+            todoCardRepository.findAllByOrderByCreatedAtAsc()
+        }.map { TodoCardDto.from(it) }
     }
 
     @Transactional

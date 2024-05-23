@@ -39,7 +39,6 @@ class TodoCards (
     @OneToMany(mappedBy = "todoCards", fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     val reply : List<Reply> = emptyList()
 
-
     fun complete(){
         _isCompleted = true
     }

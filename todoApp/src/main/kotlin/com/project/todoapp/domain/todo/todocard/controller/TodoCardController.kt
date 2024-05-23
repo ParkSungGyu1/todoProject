@@ -5,6 +5,7 @@ import com.project.todoapp.domain.todo.todocard.dtos.RetrieveTodoCardDto
 import com.project.todoapp.domain.todo.todocard.dtos.TodoCardDto
 import com.project.todoapp.domain.todo.todocard.dtos.UpdateTodoCardArguments
 import com.project.todoapp.domain.todo.todocard.service.TodoCardService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,7 +17,7 @@ class TodoCardController (
 ) {
     //TODOCARDS 생성
     @PostMapping
-    fun createTodoCard(@RequestBody createTodoCardArguments: CreateTodoCardArguments) : ResponseEntity<TodoCardDto>{
+    fun createTodoCard(@RequestBody @Valid createTodoCardArguments: CreateTodoCardArguments) : ResponseEntity<TodoCardDto>{
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(todoCardService.createTodoCard(createTodoCardArguments))
@@ -33,10 +34,13 @@ class TodoCardController (
 
 
     @GetMapping
-    fun findAllTodoCard() : ResponseEntity<List<TodoCardDto>>{
+    fun findAllTodoCard(
+        @RequestParam sort : String?,
+        @RequestParam authorName : String?
+    ) : ResponseEntity<List<TodoCardDto>>{
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(todoCardService.findAll())
+            .body(todoCardService.findAll(sort, authorName))
     }
 
     @PatchMapping("/{todoCardId}/complete")
