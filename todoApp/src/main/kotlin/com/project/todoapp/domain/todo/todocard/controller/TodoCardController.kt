@@ -1,5 +1,6 @@
 package com.project.todoapp.domain.todo.todocard.controller
 
+import com.project.todoapp.domain.security.UserPrincipal
 import com.project.todoapp.domain.todo.todocard.dtos.*
 import com.project.todoapp.domain.todo.todocard.service.TodoCardService
 import jakarta.validation.Valid
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/api/v1/todo-cards")
@@ -16,10 +18,14 @@ class TodoCardController (
 ) {
     //TODOCARDS 생성
     @PostMapping
-    fun createTodoCard(@RequestBody @Valid createTodoCardArguments: CreateTodoCardArguments) : ResponseEntity<TodoCardDto>{
+    fun createTodoCard(
+        @RequestBody @Valid createTodoCardArguments: CreateTodoCardArguments,
+        authentication: Authentication
+    ) : ResponseEntity<TodoCardDto>{
+
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(todoCardService.createTodoCard(createTodoCardArguments))
+            .body(todoCardService.createTodoCard(createTodoCardArguments, authentication.principal as UserPrincipal))
 
     }
 
@@ -61,16 +67,22 @@ class TodoCardController (
     @PutMapping("/{todoCardId}")
     fun updateTodoCard(
         @PathVariable todoCardId: Long,
-        @RequestBody updateTodoCardArguments: UpdateTodoCardArguments
+        @RequestBody updateTodoCardArguments: UpdateTodoCardArguments,
+        authentication: Authentication
     ) : ResponseEntity<TodoCardDto>{
+
+        val userPrincipal = authentication.principal as UserPrincipal
+
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(todoCardService.updateTodoCard(todoCardId,updateTodoCardArguments))
+            .body(todoCardService.updateTodoCard(todoCardId,updateTodoCardArguments, userPrincipal.to()))
     }
 
     @DeleteMapping("/{todoCardId}")
-    fun deleteTodoCard(@PathVariable todoCardId: Long) : ResponseEntity<Unit>{
-        todoCardService.deleteTodoCard(todoCardId)
+    fun deleteTodoCard(
+        @PathVariable todoCardId: Long,
+        authentication: Authentication) : ResponseEntity<Unit>{
+        todoCardService.deleteTodoCard(todoCardId, authentication.principal as UserPrincipal)
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
             .body(null)

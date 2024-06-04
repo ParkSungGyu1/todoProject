@@ -1,10 +1,13 @@
 package com.project.todoapp.domain.todo.todocard.service
 
 import com.project.todoapp.domain.common.exception.ModelNotFoundException
+import com.project.todoapp.domain.security.UserPrincipal
 import com.project.todoapp.domain.todo.reply.repository.ReplyRepository
 import com.project.todoapp.domain.todo.todocard.dtos.*
 import com.project.todoapp.domain.todo.todocard.model.TodoCards
 import com.project.todoapp.domain.todo.todocard.repository.TodoCardRepository
+import com.project.todoapp.domain.users.model.Users
+import com.project.todoapp.domain.users.repository.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -13,14 +16,18 @@ import org.springframework.stereotype.Service
 
 @Service
 class TodoCardService (
+    private val userRepository: UserRepository,
     private val todoCardRepository: TodoCardRepository
 ){
 
     // DB로 데이터를 저장
     @Transactional
-    fun createTodoCard(createTodoCardArguments: CreateTodoCardArguments): TodoCardDto {
+    fun createTodoCard(createTodoCardArguments: CreateTodoCardArguments, userPrincipal: UserPrincipal): TodoCardDto {
+
+        val users = userRepository.findByIdOrNull(userPrincipal.id) ?: throw ModelNotFoundException("User", userPrincipal.id)
+
         //DTO를 Entity 변환
-        val todo = TodoCards(createTodoCardArguments.title,createTodoCardArguments.content, createTodoCardArguments.authorName)
+        val todo = TodoCards(createTodoCardArguments.title,createTodoCardArguments.content, createTodoCardArguments.authorName, users)
 
         //Entity를 저장합니다!
         val todoCard = todoCardRepository.save(todo)
@@ -51,9 +58,12 @@ class TodoCardService (
     }
 
     @Transactional
-    fun updateTodoCard(todoCardId: Long, updateTodoCardArguments: UpdateTodoCardArguments): TodoCardDto {
+    fun updateTodoCard(todoCardId: Long, updateTodoCardArguments: UpdateTodoCardArguments, users: Users): TodoCardDto {
         // DB에서 todoCardId 를 통해 수정할 todoCard를 조회한다
         val foundTodoCard = todoCardRepository.findByIdOrNull(todoCardId) ?: throw ModelNotFoundException("TodoCard", todoCardId)
+
+        foundTodoCard.checkAuthorization(users)
+
         // 값을 수정한다
         foundTodoCard.updateTodoCardField(updateTodoCardArguments)
 
@@ -62,7 +72,10 @@ class TodoCardService (
         return TodoCardDto.from(foundTodoCard)
     }
 
-    fun deleteTodoCard(todoCardId: Long) {
+    fun deleteTodoCard(todoCardId: Long, userPrincipal: UserPrincipal) {
+        val foundTodoCard = todoCardRepository.findByIdOrNull(todoCardId) ?: throw ModelNotFoundException("TodoCard", todoCardId)
+        foundTodoCard.checkAuthorization(userPrincipal.to())
+
         todoCardRepository.deleteById(todoCardId)
     }
 

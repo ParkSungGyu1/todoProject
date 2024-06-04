@@ -40,6 +40,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.2.1")
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
