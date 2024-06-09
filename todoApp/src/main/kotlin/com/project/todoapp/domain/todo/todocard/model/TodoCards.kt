@@ -1,6 +1,7 @@
 package com.project.todoapp.domain.todo.todocard.model
 
 import com.project.todoapp.domain.todo.reply.model.Reply
+import com.project.todoapp.domain.todo.todocard.TodoCardException
 import com.project.todoapp.domain.todo.todocard.dtos.CreateTodoCardArguments
 import com.project.todoapp.domain.todo.todocard.dtos.UpdateTodoCardArguments
 import jakarta.persistence.CascadeType
@@ -25,9 +26,20 @@ class TodoCards (
     @Column
     var authorName : String
 ){
+
+    init {
+        if(this.title.isEmpty() || this.title.length > 10){
+            throw TodoCardException("title의 크기는 1부터 10까지입니다!!!!")
+        }
+
+        if(this.content.isEmpty() || this.content.length > 10){
+            throw TodoCardException("content의 크기는 1부터 10까지입니다!!!!")
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id : Long? = null
+    var id : Long? = null
 
     @CreationTimestamp
     @Column(updatable = false)

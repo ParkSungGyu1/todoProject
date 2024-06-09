@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.jpa") version "1.9.23"
     kotlin("plugin.noarg") version "1.8.22"
     kotlin("plugin.allopen") version "1.8.22"
+    kotlin("kapt") version "1.8.22"
 }
 
 group = "com.project"
@@ -59,6 +60,9 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
     testImplementation("io.mockk:mockk:$mockkVersion")
+
+    implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta") // 추가!
+    kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta") // 추가!
 }
 
 tasks.withType<KotlinCompile> {

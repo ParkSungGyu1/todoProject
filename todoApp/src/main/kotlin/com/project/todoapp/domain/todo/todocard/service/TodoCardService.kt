@@ -4,6 +4,7 @@ import com.project.todoapp.domain.common.exception.ModelNotFoundException
 import com.project.todoapp.domain.todo.reply.repository.ReplyRepository
 import com.project.todoapp.domain.todo.todocard.dtos.*
 import com.project.todoapp.domain.todo.todocard.model.TodoCards
+import com.project.todoapp.domain.todo.todocard.repository.TodoCardQueryDSLRepostiory
 import com.project.todoapp.domain.todo.todocard.repository.TodoCardRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class TodoCardService (
-    private val todoCardRepository: TodoCardRepository
+    private val todoCardRepository: TodoCardRepository,
+    private val todoCardQueryDSLRepostiory: TodoCardQueryDSLRepostiory
 ){
 
     // DB로 데이터를 저장
@@ -28,7 +30,7 @@ class TodoCardService (
         return TodoCardDto.from(todoCard)
     }
 
-    fun findById(todoCardId: Long): RetrieveTodoCardDto {
+    fun findById(todoCardId: Long): RetrieveTodoCardDto? {
         //todoCardId로 db에서 todoCard 찾기
         val foundTodoCard = todoCardRepository.findByIdOrNull(todoCardId) ?: throw ModelNotFoundException("TodoCard", todoCardId)
 
@@ -39,14 +41,14 @@ class TodoCardService (
 
         authorName?.let {
             // 입력받은 사용자 이름을 가지고 있는 데이터를 꺼내와야함
-            return todoCardRepository.findAllByAuthorName(authorName).map { TodoCardDto.from(it) }
+            return todoCardQueryDSLRepostiory.findAllByAuthorName(authorName).map { TodoCardDto.from(it) }
         }
 
         // sort ==> desc(내림차순) / asc(오름차순)
         return if(sort == "desc"){
-            todoCardRepository.findAllByOrderByCreatedAtDesc()
+            todoCardQueryDSLRepostiory.findAllByOrderByCreatedAtDesc()
         } else {
-            todoCardRepository.findAllByOrderByCreatedAtAsc()
+            todoCardQueryDSLRepostiory.findAllByOrderByCreatedAtAsc()
         }.map { TodoCardDto.from(it) }
     }
 

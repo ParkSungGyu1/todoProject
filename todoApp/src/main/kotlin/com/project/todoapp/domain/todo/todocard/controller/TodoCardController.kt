@@ -26,9 +26,13 @@ class TodoCardController (
     //선택한 할일 조회 기능
     @GetMapping("/{todoCardId}")
     fun findTodoCard(@PathVariable todoCardId: Long) : ResponseEntity<RetrieveTodoCardDto>{
+        val todoCard = todoCardService.findById(todoCardId)
+            ?: return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(null)
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(todoCardService.findById(todoCardId))
+            .body(todoCard)
     }
 
 
