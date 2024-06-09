@@ -21,6 +21,17 @@ class OAuthController(
     ) : String{
         return oAuthService.login(code)
     }
+    @GetMapping("/oauth/naver")
+    fun getNaverLoginPage() : String{
+        return oAuthService.getLoginPage()
+    }
+
+    @GetMapping("/naver/callback")
+    fun naverCallback(
+        @RequestParam code :String
+    ) : String{
+        return oAuthService.naverLogin(code)
+    }
 
 
 }
