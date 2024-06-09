@@ -9,5 +9,6 @@ data class CreateTodoCardArguments (
 
     @field:Size(min = 1, max = 10, message = "크기는 1부터 1000까지입니다!!!!")
     val content : String,
-    val authorName : String
+    val authorName : String,
+    val token : String
 )

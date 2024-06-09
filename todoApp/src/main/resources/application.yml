@@ -24,3 +24,16 @@ spring:
 logging:
   level:
     org.hibernate.type: trace
+
+oauth2:
+  kakao:
+    client_id: "1bdb729a8f039db81106160b51b86311"
+    redirect_url: "http://localhost:8080/kakao/callback"
+    auth_server_base_url: "https://kauth.kakao.com"
+    resource_server_base_url: "https://kapi.kakao.com"
+  naver:
+    client_id: U73HXMWMXtniwUXSooIe
+    client_secret: wF9BPDPEPV
+    redirect_url: "http://localhost:8080/naver/callback"
+    auth_server_base_url: https://nid.naver.com
+    resource_server_base_url: https://openapi.naver.com

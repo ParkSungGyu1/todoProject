@@ -16,7 +16,8 @@ class TodoCardController (
 ) {
     //TODOCARDS 생성
     @PostMapping
-    fun createTodoCard(@RequestBody @Valid createTodoCardArguments: CreateTodoCardArguments) : ResponseEntity<TodoCardDto>{
+    fun createTodoCard(
+        @RequestBody @Valid createTodoCardArguments: CreateTodoCardArguments) : ResponseEntity<TodoCardDto>{
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(todoCardService.createTodoCard(createTodoCardArguments))

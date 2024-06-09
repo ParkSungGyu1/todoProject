@@ -1,6 +1,7 @@
 package com.project.todoapp.domain.todo.todocard.service
 
 import com.project.todoapp.domain.common.exception.ModelNotFoundException
+import com.project.todoapp.domain.security.JwtPlugin
 import com.project.todoapp.domain.todo.reply.repository.ReplyRepository
 import com.project.todoapp.domain.todo.todocard.dtos.*
 import com.project.todoapp.domain.todo.todocard.model.TodoCards
@@ -13,12 +14,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class TodoCardService (
-    private val todoCardRepository: TodoCardRepository
+    private val todoCardRepository: TodoCardRepository,
+    private val jwtPlugin: JwtPlugin
 ){
 
     // DB로 데이터를 저장
     @Transactional
     fun createTodoCard(createTodoCardArguments: CreateTodoCardArguments): TodoCardDto {
+
+        val validateToken = jwtPlugin.validateToken(createTodoCardArguments.token)
         //DTO를 Entity 변환
         val todo = TodoCards(createTodoCardArguments.title,createTodoCardArguments.content, createTodoCardArguments.authorName)
 

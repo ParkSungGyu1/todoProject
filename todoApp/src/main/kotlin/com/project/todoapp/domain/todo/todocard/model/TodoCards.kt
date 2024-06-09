@@ -3,6 +3,7 @@ package com.project.todoapp.domain.todo.todocard.model
 import com.project.todoapp.domain.todo.reply.model.Reply
 import com.project.todoapp.domain.todo.todocard.dtos.CreateTodoCardArguments
 import com.project.todoapp.domain.todo.todocard.dtos.UpdateTodoCardArguments
+import com.project.todoapp.domain.users.model.Users
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -10,6 +11,7 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
@@ -23,7 +25,10 @@ class TodoCards (
     var content : String,
 
     @Column
-    var authorName : String
+    var authorName : String,
+
+  /*  @ManyToOne
+    val users : Users*/
 ){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
